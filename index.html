@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fortnite Pro Coach</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Rajdhani:wght@400;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --fn-yellow: #FFE600;
+  --fn-blue: #00C8FF;
+  --fn-purple: #8A2BE2;
+  --fn-dark: #0a0a1a;
+  --fn-darker: #050510;
+  --fn-card: rgba(10,15,40,0.85);
+  --fn-border: rgba(0,200,255,0.3);
+  --fn-glow: 0 0 20px rgba(0,200,255,0.4);
+  --fn-glow-y: 0 0 20px rgba(255,230,0,0.5);
+  --discord: #5865F2;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body {
+  font-family:'Rajdhani',sans-serif;
+  background: var(--fn-darker);
+  color:#fff;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ─── ANIMATED BG ─── */
+.bg-scene {
+  position:fixed;inset:0;z-index:0;overflow:hidden;
+  background: linear-gradient(180deg, #0a0020 0%, #001030 40%, #000820 100%);
+}
+.bg-stars {
+  position:absolute;inset:0;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 50% 60%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 50%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 35% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 65% 85%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(2px 2px at 15% 55%, rgba(0,200,255,0.4) 0%, transparent 100%),
+    radial-gradient(2px 2px at 75% 35%, rgba(255,230,0,0.3) 0%, transparent 100%);
+  background-size: 400px 300px;
+  animation: twinkle 8s ease-in-out infinite alternate;
+}
+@keyframes twinkle { 0%{opacity:.7} 100%{opacity:1} }
+
+/* Storm circle removed */
+
+/* Ground line */
+.bg-ground {
+  position:absolute;bottom:0;left:0;right:0;height:120px;
+  background: linear-gradient(0deg, rgba(0,80,20,0.3) 0%, transparent 100%);
+}
+
+/* SVG Elements */
+.bg-elements {
+  position:absolute;inset:0;pointer-events:none;
+}
+
+/* (decorative elements removed) */
+
+/* ─── LOGIN SCREEN ─── */
+#login-screen {
+  position:fixed;inset:0;z-index:100;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+}
+
+.login-card {
+  position:relative;
+  background: rgba(5,5,25,0.92);
+  border:2px solid var(--fn-blue);
+  border-radius:16px;
+  padding:3rem 2.5rem;
+  max-width:460px;width:100%;
+  text-align:center;
+  backdrop-filter:blur(20px);
+  box-shadow: 0 0 60px rgba(0,200,255,0.2), 0 0 120px rgba(138,43,226,0.15), inset 0 1px 0 rgba(0,200,255,0.2);
+  animation: loginEntrance .6s cubic-bezier(.175,.885,.32,1.275);
+}
+@keyframes loginEntrance {
+  from{transform:translateY(30px) scale(.95);opacity:0}
+  to{transform:translateY(0) scale(1);opacity:1}
+}
+
+.login-logo {
+  margin-bottom:1.5rem;
+}
+.login-logo svg { filter: drop-shadow(0 0 15px rgba(255,230,0,0.7)); }
+
+.login-title {
+  font-family:'Bangers',cursive;
+  font-size:3rem;
+  letter-spacing:3px;
+  color:var(--fn-yellow);
+  text-shadow: 3px 3px 0 rgba(0,0,0,0.5), 0 0 30px rgba(255,230,0,0.5);
+  line-height:1;
+  margin-bottom:.5rem;
+}
+.login-sub {
+  font-size:1rem;
+  color:rgba(255,255,255,0.6);
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:2.5rem;
+}
+
+.discord-btn {
+  width:100%;
+  padding:1rem 1.5rem;
+  background: var(--discord);
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  font-family:'Rajdhani',sans-serif;
+  font-size:1.1rem;
+  font-weight:700;
+  letter-spacing:1px;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  transition:all .2s;
+  box-shadow:0 4px 20px rgba(88,101,242,0.5);
+  text-transform:uppercase;
+}
+.discord-btn:hover {
+  background:#4752c4;
+  transform:translateY(-2px);
+  box-shadow:0 8px 30px rgba(88,101,242,0.7);
+}
+.discord-btn svg { flex-shrink:0; }
+
+.login-demo {
+  margin-top:1.5rem;
+  font-size:.8rem;
+  color:rgba(255,255,255,0.35);
+}
+.login-demo a {
+  color:var(--fn-blue);
+  cursor:pointer;
+  text-decoration:none;
+}
+.login-demo a:hover { text-decoration:underline; }
+
+.login-decor {
+  position:absolute;top:-1px;left:20px;right:20px;height:2px;
+  background: linear-gradient(90deg, transparent, var(--fn-yellow), var(--fn-blue), var(--fn-purple), transparent);
+  border-radius:2px;
+}
+
+/* ─── MAIN APP ─── */
+#app {
+  position:relative;z-index:10;
+  max-width:780px;margin:0 auto;
+  padding:0 16px 4rem;
+  display:none;
+}
+
+/* Top bar */
+.topbar {
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 0;
+  border-bottom:1px solid var(--fn-border);
+  margin-bottom:1.25rem;
+}
+.topbar-brand {
+  display:flex;align-items:center;gap:10px;
+}
+.topbar-brand svg { filter: drop-shadow(0 0 8px rgba(255,230,0,0.6)); }
+.topbar-title {
+  font-family:'Bangers',cursive;
+  font-size:1.8rem;
+  letter-spacing:2px;
+  color:var(--fn-yellow);
+  text-shadow:2px 2px 0 rgba(0,0,0,0.5);
+  line-height:1;
+}
+.topbar-sub {
+  font-size:.72rem;color:var(--fn-blue);letter-spacing:2px;text-transform:uppercase;
+}
+.user-pill {
+  display:flex;align-items:center;gap:8px;
+  background:rgba(88,101,242,0.2);
+  border:1px solid rgba(88,101,242,0.4);
+  border-radius:30px;padding:6px 14px 6px 8px;
+  cursor:pointer;
+  transition:all .2s;
+}
+.user-pill:hover { background:rgba(88,101,242,0.35); }
+.user-avatar {
+  width:30px;height:30px;border-radius:50%;
+  background:linear-gradient(135deg,var(--discord),var(--fn-purple));
+  display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;font-weight:700;color:#fff;
+  border:2px solid rgba(88,101,242,0.6);
+}
+.user-name { font-size:.85rem;font-weight:700;color:#fff;letter-spacing:.5px; }
+.logout-btn { font-size:.7rem;color:rgba(255,255,255,0.4);cursor:pointer;margin-left:4px; }
+.logout-btn:hover { color:#ff6b6b; }
+
+/* API setup */
+.api-box {
+  background:rgba(10,15,40,0.8);
+  border:1px solid rgba(0,200,255,0.25);
+  border-radius:12px;
+  padding:1rem 1.25rem;
+  margin-bottom:1.25rem;
+  backdrop-filter:blur(10px);
+}
+.api-box-title {
+  font-size:.85rem;font-weight:700;
+  color:var(--fn-blue);letter-spacing:1px;text-transform:uppercase;
+  margin-bottom:.75rem;display:flex;align-items:center;gap:8px;
+}
+.api-row { display:flex;gap:8px;flex-wrap:wrap; }
+.api-row input {
+  flex:1;min-width:180px;
+  padding:9px 12px;
+  background:rgba(0,0,0,0.4);
+  border:1px solid rgba(0,200,255,0.3);
+  border-radius:8px;
+  color:#fff;font-family:monospace;font-size:13px;
+}
+.api-row input:focus { outline:none;border-color:var(--fn-blue);box-shadow:0 0 10px rgba(0,200,255,0.2); }
+.api-row input::placeholder { color:rgba(255,255,255,0.3); }
+.fn-btn {
+  padding:9px 18px;
+  background:linear-gradient(135deg,var(--fn-blue),#0088cc);
+  color:#fff;border:none;border-radius:8px;
+  font-family:'Rajdhani',sans-serif;font-size:.9rem;font-weight:700;
+  letter-spacing:1px;text-transform:uppercase;
+  cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.fn-btn:hover { filter:brightness(1.2);transform:translateY(-1px); }
+.fn-btn.ghost {
+  background:transparent;
+  border:1px solid rgba(0,200,255,0.3);color:var(--fn-blue);
+}
+.fn-btn.yellow {
+  background:linear-gradient(135deg,var(--fn-yellow),#ccb800);
+  color:#000;
+}
+.fn-btn.yellow:hover { filter:brightness(1.1); }
+.api-status {
+  margin-top:.6rem;font-size:.8rem;padding:6px 10px;border-radius:6px;display:none;
+}
+.api-status.ok { background:rgba(0,180,80,0.2);color:#4ade80;border:1px solid rgba(0,180,80,0.3);display:block; }
+.api-status.err { background:rgba(255,50,50,0.15);color:#ff6b6b;border:1px solid rgba(255,50,50,0.3);display:block; }
+.api-badge {
+  font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;
+  background:rgba(255,200,0,0.2);color:var(--fn-yellow);border:1px solid rgba(255,230,0,0.3);
+}
+.api-badge.ok { background:rgba(0,180,80,0.2);color:#4ade80;border-color:rgba(0,180,80,0.3); }
+
+/* Tabs */
+.tabs {
+  display:flex;gap:4px;margin-bottom:1.25rem;
+  overflow-x:auto;padding-bottom:2px;
+}
+.tabs::-webkit-scrollbar { height:2px; }
+.tabs::-webkit-scrollbar-thumb { background:var(--fn-border); }
+.tab {
+  padding:8px 16px;
+  border-radius:6px;
+  border:1px solid rgba(0,200,255,0.2);
+  background:transparent;
+  font-family:'Rajdhani',sans-serif;
+  font-size:.85rem;font-weight:700;
+  letter-spacing:.5px;text-transform:uppercase;
+  cursor:pointer;color:rgba(255,255,255,0.5);
+  transition:all .15s;white-space:nowrap;
+}
+.tab:hover { border-color:var(--fn-blue);color:var(--fn-blue); }
+.tab.active {
+  background:linear-gradient(135deg,rgba(0,200,255,0.2),rgba(0,100,200,0.2));
+  border-color:var(--fn-blue);color:var(--fn-blue);
+  box-shadow:0 0 12px rgba(0,200,255,0.2);
+}
+
+/* Panels */
+.panel{display:none} .panel.active{display:block}
+
+/* Cards */
+.fn-card {
+  background:var(--fn-card);
+  border:1px solid var(--fn-border);
+  border-radius:12px;padding:1rem 1.25rem;
+  margin-bottom:10px;
+  backdrop-filter:blur(10px);
+  box-shadow:0 4px 20px rgba(0,0,0,0.3);
+}
+.fn-card:hover { border-color:rgba(0,200,255,0.5); }
+
+.sec-title {
+  font-family:'Orbitron',monospace;
+  font-size:.85rem;font-weight:700;
+  color:var(--fn-blue);
+  letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.badge {
+  font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:20px;
+  background:rgba(0,200,255,0.15);color:var(--fn-blue);
+  border:1px solid rgba(0,200,255,0.3);letter-spacing:.5px;
+}
+.badge-y { background:rgba(255,230,0,0.15);color:var(--fn-yellow);border-color:rgba(255,230,0,0.3); }
+.badge-p { background:rgba(138,43,226,0.2);color:#c084fc;border-color:rgba(138,43,226,0.3); }
+.badge-g { background:rgba(0,200,100,0.15);color:#4ade80;border-color:rgba(0,200,100,0.3); }
+
+.note {
+  font-size:.82rem;color:rgba(255,255,255,0.5);
+  margin-bottom:12px;padding:10px 12px;
+  background:rgba(0,200,255,0.05);
+  border-left:3px solid var(--fn-blue);border-radius:6px;
+}
+
+/* Search */
+.search-box { display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap; }
+.search-box input {
+  flex:1;min-width:140px;
+  padding:10px 14px;
+  background:rgba(0,0,0,0.4);
+  border:1px solid rgba(0,200,255,0.3);
+  border-radius:8px;color:#fff;
+  font-family:'Rajdhani',sans-serif;font-size:.95rem;
+}
+.search-box input:focus { outline:none;border-color:var(--fn-blue);box-shadow:0 0 10px rgba(0,200,255,0.2); }
+.search-box input::placeholder { color:rgba(255,255,255,0.3); }
+.search-box select {
+  padding:10px;background:rgba(0,0,0,0.4);
+  border:1px solid rgba(0,200,255,0.3);border-radius:8px;
+  color:#fff;font-family:'Rajdhani',sans-serif;font-size:.9rem;
+}
+.search-box select option { background:#0a0a2a; }
+
+/* Stats grid */
+.stat-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:12px; }
+.stat-card {
+  background:rgba(0,0,0,0.3);border:1px solid rgba(0,200,255,0.15);
+  border-radius:10px;padding:.9rem;text-align:center;
+}
+.stat-label { font-size:.72rem;color:rgba(255,255,255,0.4);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px; }
+.stat-val { font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:700;color:var(--fn-yellow); }
+.stat-sub { font-size:.7rem;color:rgba(255,255,255,0.35);margin-top:2px; }
+
+/* PR badge */
+.pr-badge {
+  font-size:.75rem;padding:4px 12px;border-radius:20px;
+  border:1.5px solid var(--fn-yellow);color:var(--fn-yellow);font-weight:700;
+  font-family:'Orbitron',monospace;letter-spacing:1px;
+  background:rgba(255,230,0,0.1);
+}
+
+/* Pros grid */
+.pro-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px; }
+.pro-card {
+  background:var(--fn-card);border:1px solid var(--fn-border);
+  border-radius:12px;overflow:hidden;backdrop-filter:blur(10px);
+  transition:border-color .2s;
+}
+.pro-card:hover { border-color:rgba(0,200,255,0.5); }
+.pro-header {
+  padding:.9rem 1.1rem;border-bottom:1px solid rgba(0,200,255,0.1);
+  display:flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,rgba(0,200,255,0.05),transparent);
+}
+.pro-avatar {
+  width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg,var(--fn-blue),var(--fn-purple));
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-family:'Bangers',cursive;font-size:1rem;font-weight:700;flex-shrink:0;
+  border:2px solid rgba(0,200,255,0.5);
+  box-shadow:0 0 12px rgba(0,200,255,0.3);
+}
+.pro-name { font-size:.95rem;font-weight:700;color:var(--fn-yellow);letter-spacing:.5px; }
+.pro-tag { font-size:.72rem;color:rgba(255,255,255,0.4);letter-spacing:.5px; }
+.pro-body { padding:.9rem 1.1rem; }
+.drill { padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer; }
+.drill:last-child { border-bottom:none; }
+.drill-top { display:flex;align-items:center;justify-content:space-between; }
+.drill-name { font-size:.88rem;font-weight:600;color:rgba(255,255,255,0.85); }
+.drill-body {
+  font-size:.8rem;color:rgba(255,255,255,0.5);line-height:1.7;
+  margin-top:7px;display:none;padding:8px;
+  background:rgba(0,200,255,0.05);border-radius:6px;
+  border-left:2px solid rgba(0,200,255,0.3);
+}
+.drill-body.open { display:block; }
+.drill-arr { font-size:1rem;color:rgba(0,200,255,0.5);transition:transform .2s; }
+.drill-arr.open { transform:rotate(90deg); }
+
+/* Routine */
+.routine-list { display:flex;flex-direction:column;gap:8px; }
+.r-item {
+  display:flex;gap:12px;align-items:flex-start;
+  background:var(--fn-card);border:1px solid var(--fn-border);
+  border-radius:12px;padding:.9rem 1.1rem;
+  backdrop-filter:blur(10px);transition:border-color .2s;
+}
+.r-item:hover { border-color:rgba(0,200,255,0.4); }
+.r-num {
+  width:30px;height:30px;border-radius:50%;
+  background:rgba(0,0,0,0.3);border:2px solid rgba(0,200,255,0.4);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron',monospace;font-size:.75rem;font-weight:700;
+  flex-shrink:0;color:var(--fn-blue);
+}
+.r-num.done { background:linear-gradient(135deg,var(--fn-yellow),#ccb800);border-color:var(--fn-yellow);color:#000; }
+.r-content { flex:1;min-width:0; }
+.r-content h3 { font-size:.92rem;font-weight:700;color:#fff;margin-bottom:3px; }
+.r-content p { font-size:.78rem;color:rgba(255,255,255,0.45);line-height:1.6; }
+.r-time { font-size:.72rem;color:var(--fn-blue);margin-top:4px;font-weight:700;letter-spacing:.5px; }
+.check-btn {
+  padding:6px 12px;
+  border:1px solid rgba(0,200,255,0.4);border-radius:8px;
+  background:transparent;font-family:'Rajdhani',sans-serif;
+  font-size:.8rem;cursor:pointer;color:var(--fn-blue);flex-shrink:0;
+  transition:all .15s;font-weight:700;letter-spacing:.5px;
+}
+.check-btn:hover { background:rgba(0,200,255,0.15); }
+.check-btn.done { background:rgba(255,230,0,0.2);border-color:var(--fn-yellow);color:var(--fn-yellow); }
+
+/* Skills */
+.skill-item {
+  background:var(--fn-card);border:1px solid var(--fn-border);
+  border-radius:12px;padding:.9rem 1.1rem;margin-bottom:8px;
+}
+.skill-top { display:flex;justify-content:space-between;align-items:center;margin-bottom:8px; }
+.skill-name { font-size:.9rem;font-weight:700;color:#fff;letter-spacing:.3px; }
+.skill-score { font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;color:var(--fn-yellow); }
+.bar-bg { height:6px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;margin-bottom:8px; }
+.bar-fill { height:100%;border-radius:4px;background:linear-gradient(90deg,var(--fn-blue),var(--fn-purple));transition:width .4s; }
+.slider-row { display:flex;align-items:center;gap:10px; }
+.slider-row label { font-size:.75rem;color:rgba(255,255,255,0.4);flex-shrink:0;letter-spacing:.5px; }
+.slider-row input[type=range] { flex:1;accent-color:var(--fn-blue); }
+.slider-row span { font-size:.75rem;color:rgba(255,255,255,0.4);min-width:20px;text-align:right; }
+
+/* Chat */
+.chat-wrap {
+  background:rgba(0,0,0,0.3);border:1px solid var(--fn-border);
+  border-radius:12px;padding:1rem;margin-bottom:10px;
+}
+.chat-history {
+  display:flex;flex-direction:column;gap:10px;
+  max-height:380px;overflow-y:auto;padding-right:4px;
+}
+.chat-history::-webkit-scrollbar { width:4px; }
+.chat-history::-webkit-scrollbar-thumb { background:rgba(0,200,255,0.3);border-radius:2px; }
+.msg-user {
+  align-self:flex-end;
+  background:linear-gradient(135deg,rgba(0,200,255,0.25),rgba(0,100,200,0.25));
+  border:1px solid rgba(0,200,255,0.35);
+  padding:9px 14px;border-radius:14px 14px 3px 14px;
+  font-size:.88rem;max-width:85%;line-height:1.5;color:#fff;
+}
+.msg-ai {
+  align-self:flex-start;
+  background:rgba(10,15,40,0.9);
+  border:1px solid rgba(0,200,255,0.2);
+  padding:10px 14px;border-radius:3px 14px 14px 14px;
+  font-size:.88rem;max-width:90%;line-height:1.7;color:rgba(255,255,255,0.85);
+}
+.msg-loading { color:rgba(0,200,255,0.5);font-style:italic;font-size:.85rem;padding:4px 0;animation:pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:.5} 50%{opacity:1} }
+.input-row { display:flex;gap:8px;margin-top:10px; }
+.input-row input {
+  flex:1;padding:10px 14px;
+  background:rgba(0,0,0,0.4);
+  border:1px solid rgba(0,200,255,0.3);border-radius:8px;
+  color:#fff;font-family:'Rajdhani',sans-serif;font-size:.95rem;
+}
+.input-row input:focus { outline:none;border-color:var(--fn-blue); }
+.input-row input::placeholder { color:rgba(255,255,255,0.3); }
+.quick-btns { display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px; }
+.quick-btn {
+  font-size:.78rem;padding:5px 12px;
+  border:1px solid rgba(0,200,255,0.3);border-radius:20px;
+  background:transparent;cursor:pointer;
+  color:rgba(0,200,255,0.7);
+  font-family:'Rajdhani',sans-serif;font-weight:700;
+  letter-spacing:.3px;transition:all .15s;
+}
+.quick-btn:hover { background:rgba(0,200,255,0.15);color:var(--fn-blue);border-color:var(--fn-blue); }
+
+/* History */
+.history-row {
+  display:flex;justify-content:space-between;align-items:center;
+  padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:.88rem;
+}
+.history-row:last-child { border-bottom:none; }
+
+/* Mini form */
+.mini-form {
+  background:rgba(0,0,0,0.3);border:1px solid var(--fn-border);
+  border-radius:12px;padding:1rem;margin-top:8px;display:none;
+}
+.mini-form.open { display:block; }
+.form-row { display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap; }
+.form-row label { font-size:.78rem;color:rgba(255,255,255,0.5);min-width:55px;font-weight:700;letter-spacing:.5px; }
+.form-row input,.form-row select {
+  flex:1;min-width:70px;padding:8px 10px;
+  background:rgba(0,0,0,0.4);
+  border:1px solid rgba(0,200,255,0.3);border-radius:8px;
+  color:#fff;font-family:'Rajdhani',sans-serif;font-size:.9rem;
+}
+.form-row select option { background:#0a0a2a; }
+
+/* Add btn */
+.add-btn {
+  width:100%;padding:10px;
+  border:1.5px dashed rgba(0,200,255,0.3);border-radius:12px;
+  background:transparent;font-family:'Rajdhani',sans-serif;
+  font-size:.9rem;color:rgba(0,200,255,0.5);cursor:pointer;
+  margin-top:8px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  transition:all .15s;
+}
+.add-btn:hover { background:rgba(0,200,255,0.08);color:var(--fn-blue);border-color:var(--fn-blue); }
+
+/* Tournament */
+.tourn-row {
+  display:flex;justify-content:space-between;align-items:center;
+  padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:.88rem;
+}
+.tourn-row:last-child { border-bottom:none; }
+.tourn-row div:first-child .tourn-name { font-weight:700;color:#fff; }
+.tourn-row div:first-child .tourn-date { font-size:.72rem;color:rgba(255,255,255,0.35); }
+.tourn-row div:last-child { text-align:right; }
+.tourn-row .tourn-place { font-weight:700;color:var(--fn-yellow); }
+.tourn-row .tourn-pts { font-size:.72rem;color:rgba(255,255,255,0.35); }
+
+/* Glitch title effect */
+@keyframes glitch {
+  0%,95%,100%{transform:translate(0)} 96%{transform:translate(-2px,1px)} 97%{transform:translate(2px,-1px)} 98%{transform:translate(-1px,2px)} 99%{transform:translate(1px,-2px)}
+}
+.login-title { animation: glitch 6s ease-in-out infinite; }
+
+/* Floating particles */
+.particle {
+  position:absolute;border-radius:50%;pointer-events:none;
+  animation: particleFloat linear infinite;
+}
+@keyframes particleFloat {
+  0%{transform:translateY(0) rotate(0deg);opacity:.7}
+  100%{transform:translateY(-100vh) rotate(720deg);opacity:0}
+}
+</style>
+</head>
+<body>
+
+<!-- BG SCENE -->
+<div class="bg-scene">
+  <div class="bg-stars"></div>
+  <div class="bg-ground"></div>
+</div>
+
+<!-- ─── LOGIN SCREEN ─── -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-decor"></div>
+    <div class="login-logo">
+      <svg width="70" height="70" viewBox="0 0 70 70" fill="none">
+        <circle cx="35" cy="35" r="34" fill="rgba(0,200,255,0.1)" stroke="#00C8FF" stroke-width="1.5"/>
+        <ellipse cx="35" cy="22" rx="12" ry="12" fill="#FFE600"/>
+        <rect x="18" y="33" width="34" height="24" rx="5" fill="#FFE600"/>
+        <path d="M24 43l-5 4 5 4M46 43l5 4-5 4M33 52l4-8" stroke="#0a0020" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="22" y="58" width="26" height="4" rx="2" fill="#ccb800"/>
+      </svg>
+    </div>
+    <div class="login-title">FORTNITE</div>
+    <div class="login-title" style="font-size:2rem;color:var(--fn-blue);margin-top:-8px">PRO COACH</div>
+    <div class="login-sub">Tu entrenador competitivo</div>
+
+    <button class="discord-btn" onclick="loginWithDiscord()">
+      <svg width="24" height="18" viewBox="0 0 24 18" fill="currentColor">
+        <path d="M20.317 1.492a19.84 19.84 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 1.492a.07.07 0 00-.032.027C.533 6.093-.32 10.555.099 14.961a.08.08 0 00.031.055 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 12.278c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+      </svg>
+      Iniciar sesión con Discord
+    </button>
+
+    <div id="client-id-warning" style="margin-top:.75rem;padding:8px 12px;background:rgba(255,180,0,0.12);border:1px solid rgba(255,180,0,0.35);border-radius:8px;font-size:.75rem;color:#ffc107;display:none">
+      ⚠️ Configura tu <strong>DISCORD_CLIENT_ID</strong> en el código antes de usar el login real.
+    </div>
+
+    <div class="login-demo">
+      ¿Solo quieres explorar? <a onclick="loginDemo()">Entrar como invitado →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ─── MAIN APP ─── -->
+<div id="app">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <ellipse cx="18" cy="10" rx="8" ry="8" fill="#FFE600"/>
+        <rect x="8" y="18" width="20" height="14" rx="3" fill="#FFE600"/>
+        <path d="M12 24l-4 3 4 3M24 24l4 3-4 3M17 29l3-5" stroke="#0a0020" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div>
+        <div class="topbar-title">PRO COACH</div>
+        <div class="topbar-sub">Fortnite Competitive</div>
+      </div>
+    </div>
+    <div class="user-pill" onclick="toggleUserMenu()">
+      <div class="user-avatar" id="user-avatar">?</div>
+      <span class="user-name" id="user-name">Jugador</span>
+      <span class="logout-btn" onclick="logout(event)" title="Cerrar sesión">✕</span>
+    </div>
+  </div>
+
+  <!-- API Setup -->
+  <div class="api-box">
+    <div class="api-box-title">
+      🔑 API Key OpenRouter
+      <span class="api-badge" id="api-badge">Sin configurar</span>
+    </div>
+    <div style="font-size:.78rem;color:rgba(255,255,255,0.4);margin-bottom:8px">
+      Gratis, sin tarjeta. <a href="https://openrouter.ai/keys" target="_blank" style="color:var(--fn-blue);font-weight:700">Obtén tu key en OpenRouter →</a>
+    </div>
+    <div class="api-row">
+      <input type="password" id="api-key-input" placeholder="sk-or-v1-..." oninput="onApiKeyInput(this.value)">
+      <button class="fn-btn" onclick="saveApiKey()">Guardar</button>
+      <button class="fn-btn ghost" onclick="toggleApiVis()">👁</button>
+    </div>
+    <div class="api-status" id="api-status"></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('stats',this)">⚡ Stats</button>
+    <button class="tab" onclick="showTab('torneos',this)">🏆 Torneos</button>
+    <button class="tab" onclick="showTab('pros',this)">👑 Pros</button>
+    <button class="tab" onclick="showTab('rutina',this)">📋 Mi rutina</button>
+    <button class="tab" onclick="showTab('coach',this)">🤖 Coach IA</button>
+  </div>
+
+  <!-- STATS -->
+  <div id="panel-stats" class="panel active">
+    <div class="note">Busca tu nombre de Epic Games. Los datos se generan con IA. Para stats reales visita tracker.gg.</div>
+    <div class="search-box">
+      <input type="text" id="search-name" placeholder="Tu nombre de Epic Games..." onkeydown="if(event.key==='Enter')searchPlayer()">
+      <select id="search-platform"><option value="pc">PC</option><option value="psn">PlayStation</option><option value="xbl">Xbox</option></select>
+      <button class="fn-btn yellow" onclick="searchPlayer()">Buscar</button>
+    </div>
+    <div id="player-result"></div>
+    <div class="sec-title" style="margin-top:1rem">Historial manual <span class="badge badge-y">Tuyo</span></div>
+    <div class="fn-card" style="padding:0 1.25rem">
+      <div id="hist-list"><div class="history-row"><span style="color:rgba(255,255,255,0.3);font-size:.85rem">Sin partidas. Agrega la primera abajo.</span></div></div>
+    </div>
+    <button class="add-btn" onclick="toggleForm('mini-form')">+ Registrar partida</button>
+    <div class="mini-form" id="mini-form">
+      <div class="form-row"><label>Modo</label><select id="f-mode"><option>Solo</option><option>Duos</option><option>Trios</option><option>Escuadra</option></select></div>
+      <div class="form-row"><label>Posición</label><input type="number" id="f-place" min="1" max="100" value="20" style="max-width:80px"><label style="margin-left:8px">Elims</label><input type="number" id="f-kills" min="0" max="30" value="2" style="max-width:70px"></div>
+      <button class="fn-btn" onclick="saveGame()">Guardar</button>
+    </div>
+  </div>
+
+  <!-- TORNEOS -->
+  <div id="panel-torneos" class="panel">
+    <div class="note">Busca un jugador para ver su historial de torneos y Power Ranking.</div>
+    <div class="search-box">
+      <input type="text" id="search-tourn" placeholder="Nombre de Epic Games..." onkeydown="if(event.key==='Enter')searchTournaments()">
+      <button class="fn-btn yellow" onclick="searchTournaments()">Buscar torneos</button>
+    </div>
+    <div id="tourn-result">
+      <div class="sec-title">Sistema de Power Ranking <span class="badge badge-p">Epic PR</span></div>
+      <div class="fn-card">
+        <p style="font-size:.85rem;color:rgba(255,255,255,0.5);line-height:1.7">El Power Ranking (PR) es el sistema oficial de Epic Games para medir el desempeño competitivo. Los mejores clasifican a la FNCS y al Mundial.</p>
+        <div style="margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+          <div style="border:1px solid rgba(0,200,255,0.3);border-radius:8px;padding:10px;text-align:center"><div style="font-size:.7rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:1px">OPEN</div><div style="font-family:'Orbitron',monospace;font-size:.9rem;font-weight:700;margin-top:4px;color:#fff">0–100 PR</div></div>
+          <div style="border:1px solid rgba(255,230,0,0.3);border-radius:8px;padding:10px;text-align:center"><div style="font-size:.7rem;color:var(--fn-yellow);font-weight:700;letter-spacing:1px">CONTENDER</div><div style="font-family:'Orbitron',monospace;font-size:.9rem;font-weight:700;margin-top:4px;color:var(--fn-yellow)">100–500</div></div>
+          <div style="background:linear-gradient(135deg,rgba(138,43,226,0.3),rgba(0,200,255,0.2));border:1px solid rgba(138,43,226,0.5);border-radius:8px;padding:10px;text-align:center"><div style="font-size:.7rem;color:#c084fc;font-weight:700;letter-spacing:1px">CHAMPION</div><div style="font-family:'Orbitron',monospace;font-size:.9rem;font-weight:700;margin-top:4px;color:#c084fc">500+ PR</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROS -->
+  <div id="panel-pros" class="panel">
+    <div class="sec-title">Rutinas de jugadores pro <span class="badge">Sin trampas</span></div>
+    <div class="pro-grid" id="pro-grid"></div>
+  </div>
+
+  <!-- RUTINA -->
+  <div id="panel-rutina" class="panel">
+    <div class="sec-title">Habilidades actuales</div>
+    <div id="skills-cont"></div>
+    <div class="sec-title" style="margin-top:1.5rem">Rutina diaria <span class="badge badge-g">110 min</span></div>
+    <div class="routine-list" id="routine-cont"></div>
+  </div>
+
+  <!-- COACH -->
+  <div id="panel-coach" class="panel">
+    <div class="sec-title">Coach IA <span class="badge">OpenRouter</span></div>
+    <div class="chat-wrap">
+      <div class="chat-history" id="chat-hist">
+        <div class="msg-ai">⚡ Hola, soy tu coach de Fortnite. Pregúntame sobre estrategias de torneos, builds, edits, aim, posicionamiento — o qué hacen los pros como Peterbot, Bugha o Clix. ¿Por dónde empezamos?</div>
+      </div>
+      <div class="input-row">
+        <input type="text" id="chat-input" placeholder="Pregunta sobre estrategia, builds, mecánicas..." onkeydown="if(event.key==='Enter')sendMsg()">
+        <button class="fn-btn" onclick="sendMsg()">Enviar</button>
+      </div>
+    </div>
+    <div class="quick-btns">
+      <button class="quick-btn" onclick="askQuick('¿Cuál es la rutina de entrenamiento de Peterbot?')">🎯 Rutina Peterbot</button>
+      <button class="quick-btn" onclick="askQuick('Dame la rutina de práctica de aim de un jugador competitivo')">🖱️ Aim pro</button>
+      <button class="quick-btn" onclick="askQuick('¿Cómo preparo mi setup para torneos FNCS?')">🏆 Setup FNCS</button>
+      <button class="quick-btn" onclick="askQuick('¿Cuáles son los mejores mapas creativos para entrenar edits?')">🗺️ Mapas edit</button>
+      <button class="quick-btn" onclick="askQuick('¿Cómo mejorar mi Power Ranking en Fortnite?')">📈 Subir PR</button>
+      <button class="quick-btn" onclick="askQuick('¿Qué configuraciones de sensibilidad usan los pros?')">⚙️ Sensibilidad</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── DISCORD OAUTH CONFIG ───
+// ⚠️ REEMPLAZA ESTOS VALORES CON LOS DE TU BOT/APP DE DISCORD
+const DISCORD_CLIENT_ID = 'TU_CLIENT_ID_AQUI'; // Tu Application Client ID de Discord Developer Portal
+const DISCORD_REDIRECT_URI = window.location.origin + window.location.pathname; // Redirect URI (regresa a esta misma página)
+const DISCORD_SCOPE = 'identify'; // Solo necesitamos identificar al usuario
+
+// ─── AUTH ───
+let currentUser = null;
+
+function loginWithDiscord() {
+  // Construir URL de autorización real de Discord OAuth2
+  const state = Math.random().toString(36).substring(2, 15);
+  sessionStorage.setItem('discord_oauth_state', state);
+
+  const params = new URLSearchParams({
+    client_id: DISCORD_CLIENT_ID,
+    redirect_uri: DISCORD_REDIRECT_URI,
+    response_type: 'token', // Implicit grant (no necesita backend)
+    scope: DISCORD_SCOPE,
+    state: state,
+  });
+
+  window.location.href = 'https://discord.com/api/oauth2/authorize?' + params.toString();
+}
+
+// Maneja el callback de Discord (implicit flow → token en el hash de la URL)
+async function handleDiscordCallback() {
+  const hash = window.location.hash.substring(1);
+  if (!hash) return false;
+
+  const params = new URLSearchParams(hash);
+  const accessToken = params.get('access_token');
+  const returnedState = params.get('state');
+  const savedState = sessionStorage.getItem('discord_oauth_state');
+
+  if (!accessToken) return false;
+
+  // Verificar state para prevenir CSRF (si existe)
+  if (savedState && returnedState !== savedState) {
+    showOAuthError('Error de seguridad: state no coincide. Intenta de nuevo.');
+    return false;
+  }
+
+  sessionStorage.removeItem('discord_oauth_state');
+
+  // Limpiar hash de la URL sin recargar la página
+  history.replaceState(null, '', window.location.pathname);
+
+  // Obtener información del usuario desde la API de Discord
+  showLoginLoading(true);
+  try {
+    const res = await fetch('https://discord.com/api/users/@me', {
+      headers: { Authorization: 'Bearer ' + accessToken }
+    });
+
+    if (!res.ok) throw new Error('No se pudo obtener tu perfil de Discord.');
+
+    const discordUser = await res.json();
+
+    // Guardar token para sesiones futuras
+    localStorage.setItem('discord_token', accessToken);
+    localStorage.setItem('discord_token_expires', Date.now() + (params.get('expires_in') * 1000 || 604800000));
+
+    const avatarUrl = discordUser.avatar
+      ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png?size=64`
+      : null;
+
+    const user = {
+      name: discordUser.global_name || discordUser.username,
+      username: discordUser.username,
+      id: discordUser.id,
+      avatar: discordUser.username.substring(0, 2).toUpperCase(),
+      avatarUrl: avatarUrl,
+      source: 'discord'
+    };
+
+    setUser(user);
+    return true;
+  } catch(e) {
+    showOAuthError('Error al conectar con Discord: ' + e.message);
+    showLoginLoading(false);
+    return false;
+  }
+}
+
+function showLoginLoading(show) {
+  const btn = document.querySelector('.discord-btn');
+  if (btn) btn.disabled = show;
+  if (btn) btn.innerHTML = show
+    ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Conectando con Discord...`
+    : `<svg width="24" height="18" viewBox="0 0 24 18" fill="currentColor"><path d="M20.317 1.492a19.84 19.84 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 1.492a.07.07 0 00-.032.027C.533 6.093-.32 10.555.099 14.961a.08.08 0 00.031.055 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 12.278c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg> Iniciar sesión con Discord`;
+}
+
+function showOAuthError(msg) {
+  const card = document.querySelector('.login-card');
+  const existing = document.getElementById('oauth-error');
+  if (existing) existing.remove();
+  const err = document.createElement('div');
+  err.id = 'oauth-error';
+  err.style.cssText = 'margin-top:1rem;padding:10px 14px;background:rgba(255,50,50,0.15);border:1px solid rgba(255,50,50,0.4);border-radius:8px;color:#ff6b6b;font-size:.85rem;';
+  err.textContent = msg;
+  card.appendChild(err);
+}
+
+function loginDemo() {
+  setUser({ name: 'Invitado', avatar: '👤', source: 'demo' });
+}
+
+function setUser(user) {
+  currentUser = user;
+  localStorage.setItem('fnc_user', JSON.stringify(user));
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('user-name').textContent = user.name;
+  const av = document.getElementById('user-avatar');
+  if (user.source === 'demo') {
+    av.textContent = '👤';
+  } else if (user.avatarUrl) {
+    av.innerHTML = `<img src="${user.avatarUrl}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.parentElement.textContent='${user.avatar}'">`;
+  } else {
+    av.textContent = user.avatar;
+  }
+  renderPros(); renderSkills(); renderRoutine(); renderHistory();
+  // restore API key
+  const saved = localStorage.getItem('fnc_api_key');
+  if (saved) {
+    API_KEY = saved;
+    document.getElementById('api-key-input').value = saved;
+    document.getElementById('api-badge').textContent = 'Activa ✓';
+    document.getElementById('api-badge').className = 'api-badge ok';
+    showApiStatus('✓ API Key cargada.','ok');
+  }
+}
+
+function logout(e) {
+  e.stopPropagation();
+  localStorage.removeItem('fnc_user');
+  localStorage.removeItem('discord_token');
+  localStorage.removeItem('discord_token_expires');
+  currentUser = null;
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+// Check saved session
+window.addEventListener('DOMContentLoaded', async () => {
+  // 1. Primero intentar manejar el callback de Discord (token en el hash de la URL)
+  if (window.location.hash.includes('access_token')) {
+    const handled = await handleDiscordCallback();
+    if (handled) { spawnParticles(); return; }
+  }
+
+  // 2. Intentar restaurar sesión guardada con token válido
+  const saved = localStorage.getItem('fnc_user');
+  const token = localStorage.getItem('discord_token');
+  const tokenExpires = parseInt(localStorage.getItem('discord_token_expires') || '0');
+
+  if (saved && token && Date.now() < tokenExpires) {
+    try {
+      const user = JSON.parse(saved);
+      if (user.source === 'discord') {
+        // Verificar que el token siga siendo válido con Discord
+        const res = await fetch('https://discord.com/api/users/@me', {
+          headers: { Authorization: 'Bearer ' + token }
+        });
+        if (res.ok) {
+          setUser(user);
+          spawnParticles();
+          return;
+        } else {
+          // Token expirado, limpiar sesión
+          localStorage.removeItem('fnc_user');
+          localStorage.removeItem('discord_token');
+          localStorage.removeItem('discord_token_expires');
+        }
+      } else {
+        // Sesión de invitado
+        setUser(user);
+        spawnParticles();
+        return;
+      }
+    } catch(e) {}
+  } else if (saved) {
+    // Sesión sin token (invitado) o token expirado
+    try {
+      const user = JSON.parse(saved);
+      if (user.source === 'demo') {
+        setUser(user);
+        spawnParticles();
+        return;
+      }
+    } catch(e) {}
+    // Limpiar sesiones expiradas
+    localStorage.removeItem('fnc_user');
+    localStorage.removeItem('discord_token');
+    localStorage.removeItem('discord_token_expires');
+  }
+
+  // Mostrar advertencia si no se ha configurado el Client ID
+  if (DISCORD_CLIENT_ID === 'TU_CLIENT_ID_AQUI') {
+    const warn = document.getElementById('client-id-warning');
+    if (warn) warn.style.display = 'block';
+  }
+
+  spawnParticles();
+});
+function spawnParticles() {
+  const colors = ['#FFE600','#00C8FF','#8A2BE2','#ff6b6b'];
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 4 + 2;
+    p.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;
+      bottom:${Math.random()*20}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      opacity:${Math.random()*.5+.2};
+      animation-duration:${Math.random()*15+8}s;
+      animation-delay:${Math.random()*10}s;
+    `;
+    document.querySelector('.bg-scene').appendChild(p);
+  }
+}
+
+// ─── API ───
+let API_KEY = localStorage.getItem('fnc_api_key') || '';
+
+function onApiKeyInput(v) {}
+function toggleApiVis() {
+  const inp = document.getElementById('api-key-input');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+function saveApiKey() {
+  const val = document.getElementById('api-key-input').value.trim();
+  if (!val) { showApiStatus('Pega tu API key primero.','err'); return; }
+  if (!val.startsWith('sk-or-')) { showApiStatus('Formato inválido. La key de OpenRouter empieza con sk-or-','err'); return; }
+  API_KEY = val;
+  localStorage.setItem('fnc_api_key', val);
+  showApiStatus('✓ API Key guardada. Coach IA activo.','ok');
+  document.getElementById('api-badge').textContent = 'Activa ✓';
+  document.getElementById('api-badge').className = 'api-badge ok';
+}
+function showApiStatus(msg, type) {
+  const s = document.getElementById('api-status');
+  s.textContent = msg; s.className = 'api-status ' + type;
+}
+
+// ─── DATA ───
+const PROS = [
+  {name:"Peterbot",tag:"Aim & Edit god · NA-East",init:"PB",
+   style:"Conocido por su aim mecánico y edits ultrarrápidos. Practica aim en Creative puro antes de ranked.",
+   drills:[
+    {name:"Warm-up de aim (30 min diarios)",body:"Mapa: The Pit (código 6562-8953). Haz 500 tiros a cabeza antes de tu primera partida. Meta: 60%+ de precisión a cabeza en 10 minutos seguidos."},
+    {name:"Edit courses (45 min)",body:"Mapa: Raider's Edit Course (código 0624-6456). 100 edits básicos sin errores. Cuando los hagas sin pensar, sube al siguiente nivel."},
+    {name:"Boxfight 1v1 forzando edits",body:"Partida privada 1v1 con regla: solo gana quien edita al enemigo. Fuerza el hábito de editar bajo presión real."},
+    {name:"Sesión sin warm-up (semanal)",body:"Una vez a la semana, juega ranked SIN calentamiento. Examen de qué tanto retiene tu músculo."}
+   ]},
+  {name:"Bugha",tag:"Campeón Mundial 2019 · NA-East",init:"BG",
+   style:"Campeón del primer World Cup. Famoso por su IQ de juego, construcción sólida y calma extrema bajo presión.",
+   drills:[
+    {name:"90° hasta 10 pisos (20 min)",body:"Practica 90° sin parar hasta 10 pisos. Objetivo: menos de 8 segundos. Bugha lo repite hasta que es totalmente automático."},
+    {name:"Análisis de repeticiones (15 min)",body:"Revisa cada partida donde moriste antes del top 15. ¿Tenías altura? ¿Sin materiales? ¿Mala rotación? Identifica el patrón."},
+    {name:"Zone-only challenge",body:"Juega con objetivo de top 3 sin eliminar a nadie. Solo posicionamiento. Entrena el instinto de rotación."},
+    {name:"High-ground retake con amigo",body:"Practica retomar el high ground en menos de 3 segundos: rampa + muro + edit. La mecánica más subestimada."}
+   ]},
+  {name:"Clix",tag:"Estilo ultra agresivo · NA-East",init:"CX",
+   style:"Famoso por su juego ultra agresivo. Cree que la única forma de mejorar en combate es combate real.",
+   drills:[
+    {name:"Drop en zonas calientes",body:"Aterriza siempre en puntos con más jugadores. Objetivo: morir rápido o ganar la pelea en los primeros 5 minutos."},
+    {name:"Rushing agresivo desde 50m",body:"Cada vez que veas un enemigo a menos de 50m: rush inmediato. Construye hacia él, no esperes."},
+    {name:"Edit-shot combo (200 reps/día)",body:"Mapa edit-shot en Creative. La combo: edita → dispara → cierra. Todo en menos de 0.4 segundos."},
+    {name:"No-box challenge",body:"Juega sin construir caja completa. Solo muros y rampas individuales. Elimina el hábito de encerrarte."}
+   ]},
+  {name:"Benjyfishy",tag:"IQ y posicionamiento · EU",init:"BF",
+   style:"Considerado uno de los mejores cerebros del juego. Sus victorias vienen del IQ, no de la mecánica pura.",
+   drills:[
+    {name:"Predicción de zona",body:"Antes de entrar, predice dónde caerá el círculo final. Benjyfishy anticipa 2-3 movimientos antes que los demás."},
+    {name:"Resource efficiency drill",body:"Regla: termina con menos de 200 materiales. Si tienes más, eres conservador. Los materiales son para usar."},
+    {name:"Third-party awareness pause",body:"Antes de atacar, pausa 3 segundos. ¿Hay un tercero mirando? El hábito más valioso que separa buenos de pros."},
+    {name:"Low-ground survival",body:"Practica ganar desde el low ground sin buscar el high. Dominas muros, edits de escape y rotaciones creativas."}
+   ]}
+];
+
+const SKILLS = [
+  {name:"Puntería (aim)",score:3},{name:"Construcción",score:2},{name:"Edits",score:2},
+  {name:"Posicionamiento",score:4},{name:"Rotación de zonas",score:3},{name:"Mental / IQ",score:3}
+];
+
+const ROUTINE = [
+  {title:"Aim warm-up en Creative",desc:"The Pit o mapa de aim. 500 tiros a la cabeza antes de abrir el lobby. (Peterbot)",time:"20 min",done:false},
+  {title:"Edit course (100 reps)",desc:"Raider's Edit Course. Repite el mismo edit hasta que fluya sin pensar. (Peterbot)",time:"20 min",done:false},
+  {title:"90° y high-ground retake",desc:"10 pisos de 90° seguidos, luego retomar altura. Objetivo: bajo 8s. (Bugha)",time:"15 min",done:false},
+  {title:"Edit-shot combo (200 reps)",desc:"Edita → dispara → cierra. Menos de 0.4s por combo. (Clix)",time:"20 min",done:false},
+  {title:"Partidas ranked",desc:"Foco en UN solo aspecto por sesión: aim, builds o posicionamiento.",time:"45 min",done:false},
+  {title:"Análisis de replays",desc:"Revisa la partida donde moriste antes del top 10. Identifica el error. (Bugha)",time:"10 min",done:false}
+];
+
+let games = [], chatHistory = [];
+
+// ─── UI FUNCTIONS ───
+function showTab(tab, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+  if (el) el.classList.add('active');
+}
+function toggleForm(id) { document.getElementById(id).classList.toggle('open'); }
+
+function renderPros() {
+  const g = document.getElementById('pro-grid'); g.innerHTML = '';
+  PROS.forEach((p, pi) => {
+    const drills = p.drills.map((d, di) => `<div class="drill" onclick="toggleDrill(${pi},${di})">
+      <div class="drill-top"><span class="drill-name">${d.name}</span><span class="drill-arr" id="da-${pi}-${di}">›</span></div>
+      <div class="drill-body" id="db-${pi}-${di}">${d.body}</div>
+    </div>`).join('');
+    g.innerHTML += `<div class="pro-card">
+      <div class="pro-header">
+        <div class="pro-avatar">${p.init}</div>
+        <div><div class="pro-name">${p.name}</div><div class="pro-tag">${p.tag}</div></div>
+      </div>
+      <div class="pro-body">
+        <p style="font-size:.78rem;color:rgba(255,255,255,0.4);margin-bottom:10px;line-height:1.6">${p.style}</p>
+        ${drills}
+      </div>
+    </div>`;
+  });
+}
+function toggleDrill(pi, di) {
+  document.getElementById(`db-${pi}-${di}`).classList.toggle('open');
+  document.getElementById(`da-${pi}-${di}`).classList.toggle('open');
+}
+
+function renderSkills() {
+  const c = document.getElementById('skills-cont'); c.innerHTML = '';
+  SKILLS.forEach((s, i) => {
+    c.innerHTML += `<div class="skill-item">
+      <div class="skill-top"><span class="skill-name">${s.name}</span><span class="skill-score" id="sv-${i}">${s.score}/10</span></div>
+      <div class="bar-bg"><div class="bar-fill" id="sf-${i}" style="width:${s.score*10}%"></div></div>
+      <div class="slider-row"><label>Mi nivel</label><input type="range" min="1" max="10" step="1" value="${s.score}" oninput="updateSkill(${i},this.value)"><span id="sl-${i}">${s.score}</span></div>
+    </div>`;
+  });
+}
+function updateSkill(i, v) {
+  const n = parseInt(v); SKILLS[i].score = n;
+  document.getElementById(`sv-${i}`).textContent = n+'/10';
+  document.getElementById(`sf-${i}`).style.width = (n*10)+'%';
+  document.getElementById(`sl-${i}`).textContent = n;
+}
+
+function renderRoutine() {
+  const c = document.getElementById('routine-cont'); c.innerHTML = '';
+  ROUTINE.forEach((r, i) => {
+    c.innerHTML += `<div class="r-item">
+      <div class="r-num ${r.done?'done':''}">${r.done?'✓':i+1}</div>
+      <div class="r-content"><h3>${r.title}</h3><p>${r.desc}</p><div class="r-time">⏱ ${r.time}</div></div>
+      <button class="check-btn ${r.done?'done':''}" onclick="toggleR(${i})">${r.done?'✓ Hecho':'Marcar'}</button>
+    </div>`;
+  });
+}
+function toggleR(i) { ROUTINE[i].done = !ROUTINE[i].done; renderRoutine(); }
+
+function saveGame() {
+  const mode = document.getElementById('f-mode').value;
+  const place = parseInt(document.getElementById('f-place').value)||20;
+  const kills = parseInt(document.getElementById('f-kills').value)||0;
+  games.unshift({mode, place, kills});
+  renderHistory();
+  document.getElementById('mini-form').classList.remove('open');
+}
+function renderHistory() {
+  const l = document.getElementById('hist-list');
+  if (!games.length) { l.innerHTML='<div class="history-row"><span style="color:rgba(255,255,255,0.3);font-size:.85rem">Sin partidas. Agrega la primera abajo.</span></div>'; return; }
+  const wins = games.filter(g => g.place===1).length;
+  const avg = (games.reduce((a,g) => a+g.kills,0)/games.length).toFixed(1);
+  const wr = Math.round(wins/games.length*100);
+  l.innerHTML = `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+    <div style="text-align:center"><div style="font-size:.7rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:1px">VICTORIAS</div><div style="font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:700;color:var(--fn-yellow)">${wins}</div></div>
+    <div style="text-align:center"><div style="font-size:.7rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:1px">ELIMS/PARTIDA</div><div style="font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:700;color:var(--fn-blue)">${avg}</div></div>
+    <div style="text-align:center"><div style="font-size:.7rem;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:1px">WIN RATE</div><div style="font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:700;color:#c084fc">${wr}%</div></div>
+  </div>` + games.slice(0,10).map(g => `<div class="history-row">
+    <span style="font-weight:${g.place===1?'700':'400'};color:${g.place===1?'var(--fn-yellow)':'#fff'}">${g.place===1?'🏆 Victoria Royale':'#'+g.place}</span>
+    <span style="color:rgba(255,255,255,0.4);font-size:.82rem">${g.mode}</span>
+    <span style="font-size:.82rem;color:var(--fn-blue)">${g.kills} elims</span>
+  </div>`).join('');
+}
+
+// ─── API CALLS ───
+async function callAPI(systemPrompt, userMsg) {
+  if (!API_KEY) throw new Error('Falta API key. Guárdala arriba primero.');
+  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+API_KEY},
+    body:JSON.stringify({
+      model:'openrouter/auto',
+      max_tokens:800,
+      messages:[{role:'system',content:systemPrompt},{role:'user',content:userMsg}]
+    })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message||'Error de API');
+  return data.choices?.[0]?.message?.content||null;
+}
+
+async function searchPlayer() {
+  const name = document.getElementById('search-name').value.trim();
+  if (!name) return;
+  const div = document.getElementById('player-result');
+  div.innerHTML = `<div class="fn-card"><p style="font-size:.85rem;color:rgba(255,255,255,0.4);font-style:italic">⚡ Buscando a ${name}...</p></div>`;
+  try {
+    const txt = await callAPI(
+      `Genera stats simuladas REALISTAS para un jugador de Fortnite nivel intermedio-competitivo. Responde SOLO en JSON sin markdown ni backticks: {"name":"NOMBRE","level":87,"wins":342,"winRate":"4.2%","kills":8941,"kd":"2.1","matches":8120,"topThree":"12.4%","topFive":"18.7%","avgElims":"3.2","pr":248,"prLeague":"Contender","hoursPlayed":1240}`,
+      `Genera stats para el jugador: ${name}`
+    );
+    let s; try { s = JSON.parse(txt); } catch { s = null; }
+    if (!s) { div.innerHTML=`<div class="fn-card"><p style="font-size:.85rem;color:rgba(255,255,255,0.4)">No se pudo obtener datos. Verifica tu API key.</p></div>`; return; }
+    div.innerHTML = `<div class="fn-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--fn-blue),var(--fn-purple));display:flex;align-items:center;justify-content:center;font-family:'Bangers',cursive;font-size:1.1rem;color:#fff;border:2px solid rgba(0,200,255,0.5)">${s.name.substring(0,2).toUpperCase()}</div>
+          <div><div style="font-size:1rem;font-weight:700;color:#fff">${s.name}</div><div style="font-size:.75rem;color:rgba(255,255,255,0.4)">Nivel ${s.level} · ${s.hoursPlayed}h jugadas</div></div>
+        </div>
+        <span class="pr-badge">${s.prLeague} · ${s.pr} PR</span>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-label">Victorias</div><div class="stat-val">${s.wins}</div><div class="stat-sub">${s.winRate} win rate</div></div>
+        <div class="stat-card"><div class="stat-label">Eliminaciones</div><div class="stat-val">${s.kills}</div><div class="stat-sub">${s.kd} K/D</div></div>
+        <div class="stat-card"><div class="stat-label">Partidas</div><div class="stat-val">${s.matches}</div><div class="stat-sub">${s.avgElims} elims/partida</div></div>
+        <div class="stat-card"><div class="stat-label">Top 3 rate</div><div class="stat-val">${s.topThree}</div><div class="stat-sub">Top 5: ${s.topFive}</div></div>
+      </div>
+      <div style="padding:8px 10px;background:rgba(0,0,0,0.2);border-radius:8px;font-size:.72rem;color:rgba(255,255,255,0.3)">Datos simulados con IA · <a href="https://tracker.gg/fortnite/profile/pc/${encodeURIComponent(s.name)}/overview" target="_blank" style="color:var(--fn-blue);font-weight:700">Ver perfil real en Tracker.gg →</a></div>
+    </div>`;
+  } catch(e) { div.innerHTML = `<div class="fn-card"><p style="font-size:.85rem;color:#ff6b6b">Error: ${e.message}</p></div>`; }
+}
+
+async function searchTournaments() {
+  const name = document.getElementById('search-tourn').value.trim();
+  if (!name) return;
+  const div = document.getElementById('tourn-result');
+  div.innerHTML = `<div class="fn-card"><p style="font-size:.85rem;color:rgba(255,255,255,0.4);font-style:italic">🏆 Buscando torneos de ${name}...</p></div>`;
+  try {
+    const txt = await callAPI(
+      `Genera historial de torneos simulado para un jugador Fortnite Contender/Champion. SOLO JSON sin markdown: {"name":"NOMBRE","totalPR":312,"prLeague":"Contender","tournaments":[{"name":"FNCS Qualifier","date":"Mar 2025","placement":"Top 75","points":48,"earnings":"$0"},{"name":"Cash Cup Semanal","date":"Feb 2025","placement":"Top 25","points":85,"earnings":"$25"},{"name":"FNCS Major","date":"Ene 2025","placement":"Top 150","points":22,"earnings":"$0"},{"name":"Daily Cup","date":"Dic 2024","placement":"Top 10","points":120,"earnings":"$75"}]}`,
+      `Genera historial de torneos para: ${name}`
+    );
+    let t; try { t = JSON.parse(txt); } catch { t = null; }
+    if (!t) { div.innerHTML=`<div class="fn-card"><p style="font-size:.85rem;color:rgba(255,255,255,0.4)">No se pudo obtener datos.</p></div>`; return; }
+    div.innerHTML = `<div class="fn-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div style="font-size:1rem;font-weight:700;color:#fff">${t.name}</div>
+        <span class="pr-badge">${t.prLeague} · ${t.totalPR} PR</span>
+      </div>
+      <div style="font-family:'Orbitron',monospace;font-size:.7rem;font-weight:700;margin-bottom:10px;color:rgba(255,255,255,0.4);letter-spacing:2px">HISTORIAL DE TORNEOS</div>
+      ${t.tournaments.map(tr=>`<div class="tourn-row">
+        <div><div class="tourn-name">${tr.name}</div><div class="tourn-date">${tr.date}</div></div>
+        <div style="text-align:right"><div class="tourn-place">${tr.placement}</div><div class="tourn-pts">${tr.points} pts · ${tr.earnings}</div></div>
+      </div>`).join('')}
+      <div style="margin-top:10px;padding:8px;background:rgba(0,0,0,0.2);border-radius:8px;font-size:.72rem;color:rgba(255,255,255,0.3)">Datos simulados con IA. Para torneos reales visita Epic Games.</div>
+    </div>`;
+  } catch(e) { div.innerHTML = `<div class="fn-card"><p style="font-size:.85rem;color:#ff6b6b">Error: ${e.message}</p></div>`; }
+}
+
+async function sendMsg() {
+  const inp = document.getElementById('chat-input');
+  const msg = inp.value.trim(); if (!msg) return; inp.value = '';
+  await askCoach(msg);
+}
+async function askQuick(q) { await askCoach(q); }
+async function askCoach(question) {
+  const hist = document.getElementById('chat-hist');
+  hist.innerHTML += `<div class="msg-user">${question}</div>`;
+  const loadId = 'load-'+Date.now();
+  hist.innerHTML += `<div class="msg-loading" id="${loadId}">⚡ Pensando...</div>`;
+  hist.scrollTop = hist.scrollHeight;
+  chatHistory.push({role:'user', content:question});
+  try {
+    const systemPrompt = `Eres un coach experto en Fortnite Battle Royale competitivo. Conoces las rutinas reales de pros como Peterbot, Bugha, Clix, Benjyfishy, Arkhram, Mero, Queasy y otros. Das consejos PRÁCTICOS, detallados y accionables. NUNCA sugieres trampas, hacks ni modificaciones. Responde en español, máximo 180 palabras, tono motivador y directo.`;
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+API_KEY},
+      body:JSON.stringify({
+        model:'openrouter/auto',
+        max_tokens:1000,
+        messages:[{role:'system',content:systemPrompt},...chatHistory.slice(-10)]
+      })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message||'Error de API');
+    const text = data.choices?.[0]?.message?.content||'Sin respuesta.';
+    chatHistory.push({role:'assistant', content:text});
+    document.getElementById(loadId).outerHTML = `<div class="msg-ai">${text}</div>`;
+  } catch(e) {
+    document.getElementById(loadId).outerHTML = `<div class="msg-ai" style="color:#ff6b6b">Error: ${e.message}. Verifica tu API key.</div>`;
+  }
+  document.getElementById('chat-hist').scrollTop = 99999;
+}
+</script>
+</body>
+</html>
